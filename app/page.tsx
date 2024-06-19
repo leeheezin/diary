@@ -1,3 +1,4 @@
+import DiaryItem from "@/src/components/DiaryItem";
 import { fetchData } from "./api/api";
 import Link from 'next/link';
 
@@ -12,18 +13,7 @@ export default async function Home() {
       <div className="w-full max-w-2xl">
         {data.length > 0 ? (
           data.map((item: any, index: number) => (
-            <div key={index} className="bg-white shadow-md rounded-md p-4 mb-4">
-              <Link href={`/view/${item._id}`}>
-                <div>
-                  <span>{item.emoji}</span>
-                  <h2 className="text-xl text-green-700 font-bold">{item.title}</h2>
-                  <p className="text-gray-700">{item.content}</p>
-                </div>
-              </Link>
-              <Link href={`/update/${item._id}`}>
-                <div className="text-blue-600 hover:underline mt-2">수정</div>
-              </Link>
-            </div>
+            <DiaryItem key={index} title={item.title} content={item.content} emoji={item.emoji} id={item._id}/>
           ))
         ) : (
           <p className="text-gray-600">등록된 글이 없습니다.</p>
