@@ -21,11 +21,11 @@ export async function PATCH(req: CustomNextRequest) {
     // const emoji = formData.get('emoji') as string;
 
     // const id = req.query.id; 
-    const { emoji, title, content, _id } = await req.json(); 
+    const { emoji, title, content, _id, date } = await req.json(); 
 
     const result = await db.collection('today').updateOne(
       { _id: new ObjectId(_id) }, 
-      { $set: { emoji, title, content } }
+      { $set: { emoji, title, content, date } }
     );
 
     console.log('Data updated successfully:', result);

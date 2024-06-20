@@ -12,8 +12,9 @@ export async function POST(req: NextRequest) {
     const title = formData.get('title') as string;
     const content = formData.get('content') as string;
     const emoji = formData.get('emoji') as string;
+    const date = formData.get('date') ? new Date(formData.get('date') as string) : new Date();
 
-    const result = await db.collection('today').insertOne({ emoji, title, content });
+    const result = await db.collection('today').insertOne({ emoji, title, content, date });
     console.log('Data inserted successfully:', result);
 
     return NextResponse.redirect(new URL('/', req.url)); // NextResponse.redirect 사용

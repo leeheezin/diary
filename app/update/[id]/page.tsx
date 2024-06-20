@@ -11,6 +11,7 @@ interface EditData {
   title: string;
   content: string;
   emoji: string;
+  date: string;
   // 다른 필요한 필드들 추가
 }
 
@@ -29,7 +30,8 @@ export default async function UpdatePage({ params }: { params: { id: string } })
         _id: data._id.toString(),
         title: data.title,
         content: data.content,
-        emoji: data.emoji
+        emoji: data.emoji,
+        date: data.date
         // 다른 필요한 필드들 추가
     };
 

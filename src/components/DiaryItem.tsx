@@ -10,12 +10,28 @@ interface DiaryItemProps {
   id: string;
   content: string;
   emoji: string;
+  date: string;
 }
 
-const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji }) => {
+const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji, date }) => {
     const router = useRouter();
+    const formatDate = (dateString: string): string => {
+      const date = new Date(dateString);
+      const formattedDate = date.toLocaleDateString('ko-KR', {
+          year: 'numeric',
+          month: '2-digit',
+          day: '2-digit',
+      });
+
+      const formattedTime = date.toLocaleTimeString('ko-KR', {
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: true,
+      });
+
+      return `${formattedDate} ${formattedTime}`;
+  };
     const handleDeleteBtnClick = async () => {
-        console.log(id);
         try {
           const response = await fetch("/api/post/delete", {
             method: "DELETE",
@@ -37,8 +53,8 @@ const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji }) => {
       <Link href={`/view/${id}`}>
         <div>
           <span>{emoji}</span>
+          <p className="text-gray-500">{formatDate(date)}</p>
           <h2 className="text-xl text-green-700 font-bold">{title}</h2>
-          <p className="text-gray-700">{content}</p>
         </div>
       </Link>
       <Link href={`/update/${id}`}>

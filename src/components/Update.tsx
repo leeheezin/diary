@@ -10,7 +10,8 @@ interface UpdateProps {
         _id: string;
         title: string;
         content: string;
-        emoji:string;
+        emoji: string;
+        date: string;
         // Other properties of editData
     };
 }
@@ -21,7 +22,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
     const [message, setMessage] = useState("");
     const [emoji, setEmoji] = useState("");
     const router = useRouter();
-    
+
 
     useEffect(() => {
         setTitle(editData.title);
@@ -29,7 +30,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
         setEmoji(editData.emoji);
     }, []);
 
-    const handleChange = (e:any) => {
+    const handleChange = (e: any) => {
         const { name, value } = e.target;
         if (name === "title") {
             setTitle(value);
@@ -39,20 +40,24 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
             setEmoji(value);
         }
     };
-    const handleSubmit = async (e:any) => {
+
+    const handleSubmit = async (e: any) => {
         e.preventDefault();
         const _id = e.target._id.value;
         const title = e.target.title.value;
         const content = e.target.content.value;
         const emoji = e.target.emoji.value;
+        const updatedDate = new Date().toISOString();
 
         try {
+            
+
             const response = await fetch("/api/post/update", {
                 method: "PATCH",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ _id, emoji, title, content }),
+                body: JSON.stringify({ _id, emoji, title, content, date: updatedDate }),
             });
 
             if (!response.ok) {
@@ -92,8 +97,8 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                         <label htmlFor="content" className="block text-sm font-medium text-gray-700"></label>
                         <textarea id="content" name='content' onChange={handleChange} defaultValue={content} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:border-blue-500"></textarea>
                     </div>
-                    <button type='submit' className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">저장</button>
-                    <Link href={`/view/${editData._id.toString()}`} className="mx-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
+                    <button onClick={() => router.refresh()} type='submit' className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">저장</button>
+                    <Link href={`/view/${editData._id}`} className="mx-2 bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">
                         취소
                     </Link>
                 </form>
