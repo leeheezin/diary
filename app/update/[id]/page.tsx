@@ -12,7 +12,6 @@ interface EditData {
   content: string;
   emoji: string;
   date: string;
-  // 다른 필요한 필드들 추가
 }
 
 export default async function UpdatePage({ params }: { params: { id: string } }) {
@@ -23,7 +22,7 @@ export default async function UpdatePage({ params }: { params: { id: string } })
     const data = await db.collection('today').findOne({ _id: new ObjectId(id) });
 
     if (!data) {
-        return <div>데이터를 찾을 수 없습니다</div>; // 데이터가 null인 경우 예외 처리
+        return <div>데이터를 찾을 수 없습니다</div>; 
     }
 
     const editData: EditData = { 
@@ -32,7 +31,6 @@ export default async function UpdatePage({ params }: { params: { id: string } })
         content: data.content,
         emoji: data.emoji,
         date: data.date
-        // 다른 필요한 필드들 추가
     };
 
     

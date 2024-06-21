@@ -13,9 +13,9 @@ export async function DELETE(req: NextRequest) {
     const result = await db.collection('today').deleteOne({ _id: new ObjectId(_id) });
     console.log(result)
 
-    return NextResponse.json({ message: '게시글이 성공적으로 삭제되었습니다.' });
+    return NextResponse.json({ message: '게시글 성공' });
   } catch (error) {
     console.error('Error deleting data:', error);
-    return NextResponse.json({ message: 'Failed to delete data' }, { status: 500 });
+    return NextResponse.json({ message: '실패' }, { status: 500 });
   }
 }
