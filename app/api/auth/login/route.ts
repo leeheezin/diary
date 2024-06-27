@@ -10,10 +10,10 @@ export async function POST(req: NextRequest) {
   try {
     const client = await connectDB;
     const db = client.db('diary');
-    
-    const formData = await req.formData();
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
+
+    // 요청 본문을 JSON으로 파싱
+    const body = await req.json();
+    const { email, password } = body;
 
     const user = await db.collection('users').findOne({ email });
 
@@ -33,4 +33,4 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const runtime = 'nodejs'
+export const runtime = 'nodejs';

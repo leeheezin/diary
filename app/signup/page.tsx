@@ -16,7 +16,10 @@ const Signup = () => {
     try {
       const res = await fetch('/api/auth/signup', {
         method: 'POST',
-        body: new URLSearchParams({ email, password, username }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, username }),
       });
 
       if (!res.ok) {

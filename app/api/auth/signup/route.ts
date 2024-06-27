@@ -6,16 +6,15 @@ export async function POST(req: NextRequest) {
   try {
     const client = await connectDB;
     const db = client.db('diary');
-    
-    const formData = await req.formData();
-    const email = formData.get('email') as string;
-    const password = formData.get('password') as string;
-    const username = formData.get('username') as string;
+
+    // 요청 본문을 JSON으로 파싱
+    const body = await req.json();
+    const { email, password, username } = body;
 
     const user = await db.collection('users').findOne({ email });
 
     if (user) {
-      return NextResponse.json({ message: 'User already exists' }, { status: 409 });
+      return NextResponse.json({ message: '이미 가입된 사용자 입니다.' }, { status: 409 });
     }
 
     await db.collection('users').insertOne({ email, password, username });
@@ -27,4 +26,4 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const runtime = 'nodejs'
+export const runtime = 'nodejs';

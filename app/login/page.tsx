@@ -14,11 +14,11 @@ const Login = () => {
 
         const res = await fetch('/api/auth/login', {
             method: 'POST',
-            body: new URLSearchParams({ email, password }),
+            body: JSON.stringify({ email, password }),
         });
 
         const data = await res.json();
-
+        console.log('Login successful:', data);
         if (res.ok) {
             router.push('/');
         } else {
