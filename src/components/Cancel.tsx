@@ -27,7 +27,7 @@ const Cancel: React.FC<CancelProps> = ({ id }) => {
     };
 
     return (
-        <button onClick={handleCancel} className='text=sm'>
+        <button onClick={handleCancel} className='text-sm'>
             회원탈퇴
         </button>
     );

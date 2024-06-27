@@ -84,7 +84,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                             name="_id"
                             defaultValue={editData._id.toString()}
                         />
-                        <label htmlFor="emoji" className="block text-sm font-medium text-gray-700">오늘의 기분</label>
+                        <label htmlFor="emoji" className="block text-sm font-medium text-gray-700 mb-2">오늘의 기분</label>
                         <select name="emoji" id="emoji" value={emoji} onChange={handleChange}>
                             <option value="😄">😄</option>
                             <option value="🥲">🥲</option>
