@@ -2,7 +2,7 @@
 
 import { MongoClient } from 'mongodb';
 
-const url: string = 'mongodb+srv://gmlwls0425107:qnfpd107@diary.ul8lbra.mongodb.net/?retryWrites=true&w=majority&appName=diary';
+const url: string = process.env.MONGODB_URI || '';
 let connectDB: Promise<MongoClient>;
 
 declare global {

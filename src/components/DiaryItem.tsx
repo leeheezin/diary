@@ -4,6 +4,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from "next/navigation";
+import { MouseEvent } from 'react';
 
 interface DiaryItemProps {
   title: string;
@@ -43,29 +44,32 @@ const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji, date }
       if (!response.ok) {
         throw new Error("네트워크 응답이 올바르지 않습니다.");
       }
-      router.refresh();
+      router.push('/');
     } catch (error) {
       console.error(error);
     }
   };
+  const handleUpdate = (e:  MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
+    router.push(`/update/${id}`)
+  }
   return (
-    <div className="flex justify-between items-center bg-white shadow-md rounded-md p-4 mb-4">
-      <Link href={`/view/${id}`}>
-        <div className='flex gap-1'>
+    <div className=" bg-white shadow-md rounded-md p-4 mb-4">
+      <Link href={`/view/${id}`} className='flex justify-between items-center'>
+        <div className='flex flex-col'>
+          <h2 className="text-xl mt-2 text-green-700 font-bold">{title}</h2>
           <span>{emoji}</span>
           <p className="text-gray-500">{formatDate(date)}</p>
         </div>
-
-          <h2 className="text-xl mt-2 text-green-700 font-bold">{title}</h2>
+        <div className='flex gap-1'>
+          <button onClick={handleUpdate} className='block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
+            <div>수정</div>
+          </button>
+          <button onClick={handleDeleteBtnClick} className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
+            <div>삭제</div>
+          </button>
+        </div>
       </Link>
-      <div className='flex gap-2'>
-        <Link href={`/update/${id}`} className='block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
-          <div>수정</div>
-        </Link>
-        <button onClick={handleDeleteBtnClick} className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
-          <div>삭제</div>
-        </button>
-      </div>
     </div>
   );
 };

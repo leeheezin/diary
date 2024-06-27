@@ -2,6 +2,10 @@
 
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '../../../database';
+import jwt from 'jsonwebtoken';
+import cookie from 'cookie';
+
+const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,10 +18,21 @@ export async function POST(req: NextRequest) {
     const emoji = formData.get('emoji') as string;
     const date = formData.get('date') ? new Date(formData.get('date') as string) : new Date();
 
-    const result = await db.collection('today').insertOne({ emoji, title, content, date });
+    const cookies = cookie.parse(req.headers.get('cookie') || '');
+    const token = cookies.token;
+
+    if (!token) {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 });
+    }
+
+    const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
+    const userId = decoded.userId;
+
+    const result = await db.collection('today').insertOne({ userId, title, content, emoji, date });
     console.log('Data inserted successfully:', result);
 
-    return NextResponse.redirect(new URL('/', req.url)); // NextResponse.redirect 사용
+    // return NextResponse.json({ message: 'Post' });
+    return NextResponse.redirect(new URL('/', req.url));
   } catch (error) {
     console.error('Error inserting data:', error);
     return NextResponse.json({ message: 'Failed to insert data' }, { status: 500 });
@@ -29,3 +44,4 @@ export const config = {
     bodyParser: false,
   },
 };
+

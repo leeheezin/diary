@@ -13,7 +13,8 @@ export async function DELETE(req: NextRequest) {
     const result = await db.collection('today').deleteOne({ _id: new ObjectId(_id) });
     console.log(result)
 
-    return NextResponse.json({ message: '게시글 성공' });
+    // return NextResponse.json({ message: '성공' });
+    return NextResponse.redirect(new URL('/', req.url));
   } catch (error) {
     console.error('Error deleting data:', error);
     return NextResponse.json({ message: '실패' }, { status: 500 });
