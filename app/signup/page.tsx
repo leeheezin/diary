@@ -22,12 +22,8 @@ const Signup = () => {
         body: JSON.stringify({ email, password, username }),
       });
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.message);
-      }
 
-      router.push('/login');
+      router.push('/');
     } catch (err: any) {
       setError(err.message);
     }
