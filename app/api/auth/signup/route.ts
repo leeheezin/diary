@@ -1,7 +1,6 @@
 // /app/api/auth/signup/route.ts
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '../../../database';
-import bcrypt from 'bcrypt';
 
 export async function POST(req: NextRequest) {
   try {
@@ -19,8 +18,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: 'User already exists' }, { status: 409 });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await db.collection('users').insertOne({ email, password: hashedPassword, username });
+    await db.collection('users').insertOne({ email, password, username });
 
     return NextResponse.redirect(new URL('/login', req.url));
   } catch (error) {
@@ -29,8 +27,4 @@ export async function POST(req: NextRequest) {
   }
 }
 
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+export const runtime = 'nodejs'
