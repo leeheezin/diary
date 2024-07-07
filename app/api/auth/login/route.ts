@@ -1,23 +1,27 @@
 // /app/api/auth/login.ts
-
 import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '../../../database';
 import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || '9707846b2b70b6fc378da8c720cd65af9690b93334781ee775b94f2903d9119c12a42aa7aea53de9f76950d2fb072d9427d669bc1f1';
 
 export async function POST(req: NextRequest) {
   try {
     const client = await connectDB;
     const db = client.db('diary');
 
-    // 요청 본문을 JSON으로 파싱
     const body = await req.json();
     const { email, password } = body;
 
     const user = await db.collection('users').findOne({ email });
 
     if (!user) {
+      return NextResponse.json({ message: 'Invalid email or password' }, { status: 401 });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
       return NextResponse.json({ message: 'Invalid email or password' }, { status: 401 });
     }
 

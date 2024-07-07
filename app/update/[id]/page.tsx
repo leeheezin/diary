@@ -7,11 +7,11 @@ import { connectDB } from '@/app/database';
 import Update from '../../../src/components/Update';
 
 interface EditData {
-  _id: string;
-  title: string;
-  content: string;
-  emoji: string;
-  date: string;
+    _id: string;
+    title: string;
+    content: string;
+    emoji: string;
+    date: string;
 }
 
 export default async function UpdatePage({ params }: { params: { id: string } }) {

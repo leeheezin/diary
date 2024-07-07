@@ -10,20 +10,20 @@ const Write = () => {
                 <h4 className="sr-only">오늘의 일기</h4>
                 <form action="/api/post/write" method="POST" className="bg-white shadow-md rounded-md p-4 sm:p-6">
                     <div className="mb-4">
-                        <label htmlFor="emoji" className="block text-sm font-medium text-gray-700 mb-2">오늘의 기분</label>
+                        <label htmlFor="emoji" className="block text-sm font-medium text-gray-700">오늘의 기분</label>
                         <select name="emoji" id="emoji" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
                             <option value="😄">😄</option>
                             <option value="🥲">🥲</option>
                             <option value="😡">😡</option>
-                            <option value="😊">😊</option>
+                            <option value="🥳">🥳</option>
                         </select>
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="title" className="block text-sm font-medium text-gray-700 mb-2">글 제목</label>
+                        <label htmlFor="title" className="sr-only">글 제목</label>
                         <input type="text" id="title" name="title" placeholder="글 제목" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
                     </div>
                     <div className="mb-4">
-                        <label htmlFor="content" className="block text-sm font-medium text-gray-700 mb-2">글 내용</label>
+                        <label htmlFor="content" className="sr-only">글 내용</label>
                         <textarea id="content" name="content" placeholder="글 내용" rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:border-blue-500"></textarea>
                     </div>
                     <div className="flex sm:flex-row gap-2">

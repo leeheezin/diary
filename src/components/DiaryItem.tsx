@@ -61,7 +61,7 @@ const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji, date }
           <span>{emoji}</span>
           <p className="text-gray-500">{formatDate(date)}</p>
         </div>
-        <div className='flex gap-1'>
+        <div className='flex gap-1 whitespace-nowrap'>
           <button onClick={handleUpdate} className='block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
             <div>수정</div>
           </button>

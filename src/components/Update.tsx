@@ -4,7 +4,6 @@ import React from 'react'
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from 'next/link';
-import { HiMiniListBullet } from "react-icons/hi2";
 
 interface UpdateProps {
     editData: {
@@ -13,7 +12,6 @@ interface UpdateProps {
         content: string;
         emoji: string;
         date: string;
-        // Other properties of editData
     };
 }
 
@@ -51,8 +49,6 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
         const updatedDate = new Date().toISOString();
 
         try {
-
-
             const response = await fetch("/api/post/update", {
                 method: "PATCH",
                 headers: {
@@ -84,7 +80,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                             name="_id"
                             defaultValue={editData._id.toString()}
                         />
-                        <label htmlFor="emoji" className="block text-sm font-medium text-gray-700 mb-2">오늘의 기분</label>
+                        <label htmlFor="emoji" className="block text-sm font-medium text-gray-700">오늘의 기분</label>
                         <select name="emoji" id="emoji" value={emoji} onChange={handleChange}>
                             <option value="😄">😄</option>
                             <option value="🥲">🥲</option>

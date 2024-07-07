@@ -7,7 +7,7 @@ const DiaryWriteButton: React.FC = () => (
     <h1 className="sr-only">일기장</h1>
     <Link href="/write">
       <div className="flex items-center mb-1 text-green-600 hover:underline">
-        <FiEdit className="mr-2" /> 오늘의 일기
+        오늘의 일기 <FiEdit className="mr-2" />
       </div>
     </Link>
   </header>

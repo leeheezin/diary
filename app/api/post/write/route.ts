@@ -31,8 +31,8 @@ export async function POST(req: NextRequest) {
     const result = await db.collection('today').insertOne({ userId, title, content, emoji, date });
     console.log('Data inserted successfully:', result);
 
-    // return NextResponse.json({ message: 'Post' });
-    return NextResponse.redirect(new URL('/', req.url));
+    const insertedId = result.insertedId
+    return NextResponse.redirect(new URL(`/view/${insertedId}`, req.url));
   } catch (error) {
     console.error('Error inserting data:', error);
     return NextResponse.json({ message: 'Failed to insert data' }, { status: 500 });

@@ -15,12 +15,6 @@ export async function PATCH(req: CustomNextRequest) {
     const client = await connectDB;
     const db = client.db('diary');
 
-    // const formData = await req.formData();
-    // const title = formData.get('title') as string;
-    // const content = formData.get('content') as string;
-    // const emoji = formData.get('emoji') as string;
-
-    // const id = req.query.id; 
     const { emoji, title, content, _id, date } = await req.json(); 
 
     const result = await db.collection('today').updateOne(

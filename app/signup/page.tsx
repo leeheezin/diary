@@ -22,10 +22,11 @@ const Signup = () => {
         body: JSON.stringify({ email, password, username }),
       });
 
-
-      router.push('/');
+        router.push('/');
+        alert('회원가입이 완료되었습니다.')
     } catch (err: any) {
       setError(err.message);
+      alert('에러입니다. 다시 시도하세요.')
     }
   };
 
@@ -70,7 +71,7 @@ const Signup = () => {
               required
             />
           </div>
-          {error && <p className="text-red-500 mb-4">{error}</p>}
+          {error && <p className="text-red-500 mb-4">이미 가입된 사용자 입니다.</p>}
           <button type="submit" className="w-full px-4 py-2 text-white bg-green-600 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-600">
             회원가입
           </button>
