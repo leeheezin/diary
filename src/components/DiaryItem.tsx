@@ -32,24 +32,27 @@ const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji, date }
 
     return `${formattedDate} ${formattedTime}`;
   };
-  const handleDeleteBtnClick = async () => {
+  const handleDeleteBtnClick = async (e: MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault()
     try {
-      const response = await fetch("/api/post/delete", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ _id: id }),
-      });
-      if (!response.ok) {
-        throw new Error("네트워크 응답이 올바르지 않습니다.");
+      if (confirm('삭제하시겠습니까?')) {
+        const response = await fetch("/api/post/delete", {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ _id: id }),
+        });
+        if (!response.ok) {
+          throw new Error("네트워크 응답이 올바르지 않습니다.");
+        }
+        window.location.reload();
       }
-      router.push('/');
     } catch (error) {
       console.error(error);
     }
   };
-  const handleUpdate = (e:  MouseEvent<HTMLButtonElement>) => {
+  const handleUpdate = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     router.push(`/update/${id}`)
   }
