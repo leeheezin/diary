@@ -22,6 +22,7 @@ export default async function View({ params }: { params: { id: string } }) {
       hour: '2-digit',
       minute: '2-digit',
       hour12: true,
+      timeZone: 'Asia/Seoul'
     });
 
     return `${formattedDate} ${formattedTime}`;
@@ -35,7 +36,7 @@ export default async function View({ params }: { params: { id: string } }) {
           <div className="mb-2">
             <div className='flex gap-1 items-center'>
               <span className="text-2xl">{diaryItem?.emoji}</span>
-              <span className="">{formatDate(diaryItem?.date)}</span>
+              <span className="">{diaryItem ? formatDate(diaryItem.date) : ''}</span>
               <Link href="/" className='flex-1'>
                 <HiMiniListBullet className="ml-auto text-2xl text-green-700" />
               </Link>
