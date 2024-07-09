@@ -4,18 +4,18 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 
 const Login = () => {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
+    const router = useRouter();
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [error, setError] = useState("");
 
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
+    const handleLogin = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError("");
 
-    const res = await fetch("/api/auth/login", {
-      method: "POST",
-      body: JSON.stringify({ email, password }),
+        const res = await fetch("/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify({ email, password }),
     });
 
     const data = await res.json();

@@ -5,7 +5,7 @@ import { connectDB } from '../../../database';
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || '9707846b2b70b6fc378da8c720cd65af9690b93334781ee775b94f2903d9119c12a42aa7aea53de9f76950d2fb072d9427d669bc1f1';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(req: NextRequest) {
     const content = formData.get('content') as string;
     const emoji = formData.get('emoji') as string;
     const date = formData.get('date') ? new Date(formData.get('date') as string) : new Date();
-
+    const utcDate = new Date(date.toISOString());
     const cookies = cookie.parse(req.headers.get('cookie') || '');
     const token = cookies.token;
 
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
     const decoded = jwt.verify(token, JWT_SECRET) as { userId: string; email: string };
     const userId = decoded.userId;
 
-    const result = await db.collection('today').insertOne({ userId, title, content, emoji, date });
+    const result = await db.collection('today').insertOne({ userId, title, content, emoji, date: utcDate });
     console.log('Data inserted successfully:', result);
 
     const insertedId = result.insertedId

@@ -22,7 +22,6 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
     const [emoji, setEmoji] = useState("");
     const router = useRouter();
 
-
     useEffect(() => {
         setTitle(editData.title);
         setContent(editData.content);

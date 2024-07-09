@@ -16,10 +16,10 @@ export async function PATCH(req: CustomNextRequest) {
     const db = client.db('diary');
 
     const { emoji, title, content, _id, date } = await req.json(); 
-
+    const utcDate = new Date(date).toISOString();
     const result = await db.collection('today').updateOne(
       { _id: new ObjectId(_id) }, 
-      { $set: { emoji, title, content, date } }
+      { $set: { emoji, title, content, date: utcDate } }
     );
 
     console.log('Data updated successfully:', result);

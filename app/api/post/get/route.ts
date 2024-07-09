@@ -3,7 +3,7 @@ import { connectDB } from '../../../database';
 import jwt from 'jsonwebtoken';
 import cookie from 'cookie';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your_jwt_secret';
+const JWT_SECRET = process.env.JWT_SECRET || '9707846b2b70b6fc378da8c720cd65af9690b93334781ee775b94f2903d9119c12a42aa7aea53de9f76950d2fb072d9427d669bc1f1';
 
 export async function GET(req: NextRequest) {
   try {
