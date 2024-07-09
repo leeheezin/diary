@@ -67,12 +67,12 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
     };
 
     return (
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="flex min-h-screen justify-center">
             <div className="w-full max-w-2xl">
                 <div className='flex justify-between'>
                     <h4 className="sr-only">일기 수정</h4>
                 </div>
-                <form onSubmit={handleSubmit} className="bg-white shadow-md rounded-md p-4">
+                <form onSubmit={handleSubmit} className="bg-white rounded-md p-4">
                     <div className="mb-4 flex">
                         <input
                             type="hidden"
@@ -93,7 +93,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                     </div>
                     <div className="mb-4">
                         <label htmlFor="content" className="block text-sm font-medium text-gray-700"></label>
-                        <textarea id="content" name='content' onChange={handleChange} defaultValue={content} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:border-blue-500"></textarea>
+                        <textarea id="content" name='content' onChange={handleChange} defaultValue={content} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:border-blue-500 h-96"></textarea>
                     </div>
                     <div className="flex gap-1 items-center bg-white">
                         <button onClick={() => router.refresh()} type='submit' className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">저장</button>

@@ -28,11 +28,11 @@ export default async function View({ params }: { params: { id: string } }) {
     return `${formattedDate} ${formattedTime}`;
   };
   return (
-    <div className="flex min-h-screen items-center justify-center">
-      <div className="w-full max-w-2xl">
+    <div className="flex flex-col min-h-screen items-center justify-center p-3 sm:p-6">
+      <div className="w-full max-w-2xl flex-grow flex flex-col justify-center">
         <h4 className="sr-only">일기 보기</h4>
 
-        <div className="bg-white shadow-md rounded-md p-4 mb-4">
+        <div className="bg-white rounded-md p-2 mb-4 flex-grow">
           <div className="mb-2">
             <div className='flex gap-1 items-center'>
               <span className="text-2xl">{diaryItem?.emoji}</span>
@@ -44,7 +44,7 @@ export default async function View({ params }: { params: { id: string } }) {
             <h2 className="text-xl text-green-700 font-bold mt-3">{diaryItem?.title}</h2>
           </div>
           <p className="text-gray-700">{diaryItem?.content}</p>
-          <Link href={`/update/${id}`} className='mt-4 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
+          <Link href={`/update/${id}`} className='mt-10 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
             <div>수정</div>
           </Link>
         </div>
