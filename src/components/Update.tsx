@@ -108,7 +108,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                                 <option value="🥳">🥳</option>
                             </select>
                         </div>
-                        <div className='flex-1'>
+                        <div className='flex-auto'>
                             <label htmlFor="title" className="sr-only">제목</label>
                             <input type="text" id="title" name="title" value={title} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="제목" />
                         </div>
@@ -141,7 +141,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveImage(index)}
-                                        className="close absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 w-2 h-2 flex items-center justify-center"
+                                        className="close absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 w-5 flex items-center justify-center"
                                     >
                                         <span className="text-lg">×</span>
                                     </button>

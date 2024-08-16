@@ -29,7 +29,7 @@ const Write = () => {
             <div className="w-full max-w-lg">
                 <h4 className="sr-only">오늘의 일기</h4>
                 <form action="/api/post/write" method="POST" className="bg-white rounded-md p-4 sm:p-6" encType="multipart/form-data">
-                    <div className='flex items-end justify-between'>
+                    <div className='flex gap-2 items-end justify-between'>
                         <div className="mb-4">
                             <label htmlFor="emoji" className="sr-only">오늘의 기분</label>
                             <select name="emoji" id="emoji" className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
@@ -39,7 +39,7 @@ const Write = () => {
                                 <option value="🥳">🥳</option>
                             </select>
                         </div>
-                        <div className="mb-4">
+                        <div className="mb-4 flex-auto">
                             <label htmlFor="title" className="sr-only">제목</label>
                             <input type="text" id="title" name="title" placeholder="제목" className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" />
                         </div>
@@ -84,7 +84,7 @@ const Write = () => {
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveImage(index)}
-                                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
+                                        className="close absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 w-5 flex items-center justify-center"
                                     >
                                         x
                                     </button>
