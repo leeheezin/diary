@@ -1,6 +1,7 @@
 'use client';
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 
 const Signup = () => {
   const router = useRouter();
@@ -22,8 +23,8 @@ const Signup = () => {
         body: JSON.stringify({ email, password, username }),
       });
 
-        router.push('/');
-        alert('회원가입이 완료되었습니다.')
+      router.push('/');
+      alert('회원가입이 완료되었습니다.')
     } catch (err: any) {
       setError(err.message);
       alert('에러입니다. 다시 시도하세요.')
@@ -31,8 +32,11 @@ const Signup = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-100 px-5">
-      <div className="w-full max-w-md p-6 bg-white rounded-md shadow-md">
+    <div className="flex flex-col min-h-screen bg-gray-100 px-5">
+      <h1 className="text-4xl font-bold text-green-600 mt-4">
+        <Link href="/">Diary</Link>
+      </h1>
+      <div className="m-auto w-full max-w-md p-6 bg-white rounded-md shadow-md">
         <h2 className="text-2xl font-bold mb-4">회원가입</h2>
         <form onSubmit={handleSignup}>
           <div className="mb-4">

@@ -1,15 +1,36 @@
-import { ObjectId } from 'mongodb';
-import { connectDB } from '../../database';
+"use client";
+
+import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { HiMiniListBullet } from "react-icons/hi2";
+import Image from 'next/image';
 
-export default async function View({ params }: { params: { id: string } }) {
+const View = ({ params }: { params: { id: string } }) => {
   const id = params.id;
+  const [diaryItem, setDiaryItem] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
 
-  const client = await connectDB;
-  const db = client.db('diary');
+  useEffect(() => {
+    const fetchDiaryItem = async () => {
+      try {
+        const response = await fetch(`/api/post/${id}`);
+        if (!response.ok) {
+          throw new Error('네트워크 응답이 올바르지 않습니다.');
+        }
+        const data = await response.json();
+        setDiaryItem(data);
+      } catch (error) {
+        console.error('데이터를 불러오는 중 오류가 발생했습니다:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  const diaryItem = await db.collection('today').findOne({ _id: new ObjectId(id) });
+    fetchDiaryItem();
+  }, [id]);
+
   const formatDate = (dateString: string): string => {
     const date = new Date(dateString);
     const formattedDate = date.toLocaleDateString('ko-KR', {
@@ -27,6 +48,29 @@ export default async function View({ params }: { params: { id: string } }) {
 
     return `${formattedDate} ${formattedTime}`;
   };
+
+  const handleDelete = async () => {
+    if (confirm('정말로 삭제하시겠습니까?')) {
+      try {
+        const response = await fetch('/api/post/delete', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ _id: id }),
+        });
+        if (!response.ok) {
+          throw new Error('삭제 요청이 실패했습니다.');
+        }
+        router.push('/'); 
+      } catch (error) {
+        console.error('삭제 중 오류가 발생했습니다:', error);
+      } 
+    }
+  };
+
+  if (loading) return <div className='mt-4 ml-4 text-green-700 text-xl'>Loading...</div>;
+
   return (
     <div className="flex flex-col min-h-screen items-center justify-center p-3 sm:p-6">
       <div className="w-full max-w-2xl flex-grow flex flex-col justify-center">
@@ -43,12 +87,48 @@ export default async function View({ params }: { params: { id: string } }) {
             </div>
             <h2 className="text-xl text-green-700 font-bold mt-3">{diaryItem?.title}</h2>
           </div>
+          {diaryItem?.imageUrls && (
+            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+            {diaryItem.imageUrls.map((imageUrl: string, index: number) => {
+              const isWide = index % 3 === 0; 
+              const isTall = index % 3 === 3; 
+          
+              return (
+                <div 
+                  key={index} 
+                  className={`relative ${isWide ? 'col-span-2' : ''} ${isTall ? 'row-span-2' : ''}`}
+                  style={{
+                    paddingBottom: isWide ? '50%' : isTall ? '200%' : '100%', 
+                  }}
+                >
+                  <Image 
+                    src={imageUrl} 
+                    alt={`Diary Image ${index + 1}`} 
+                    layout="fill" 
+                    objectFit="contain" 
+                  />
+                </div>
+              );
+            })}
+          </div>
+          
+          )}
           <p className="text-gray-700">{diaryItem?.content}</p>
-          <Link href={`/update/${id}`} className='mt-10 inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
-            <div>수정</div>
-          </Link>
+          <div className="flex gap-2 mt-10">
+            <Link href={`/update/${id}`} className='inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
+              수정
+            </Link>
+            <button 
+              onClick={handleDelete} 
+              className={`inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md`}
+            >
+              삭제
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
-}
+};
+
+export default View;

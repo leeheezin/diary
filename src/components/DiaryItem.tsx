@@ -32,26 +32,7 @@ const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji, date }
 
     return `${formattedDate} ${formattedTime}`;
   };
-  const handleDeleteBtnClick = async (e: MouseEvent<HTMLButtonElement>) => {
-    e.preventDefault()
-    try {
-      if (confirm('삭제하시겠습니까?')) {
-        const response = await fetch("/api/post/delete", {
-          method: "DELETE",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ _id: id }),
-        });
-        if (!response.ok) {
-          throw new Error("네트워크 응답이 올바르지 않습니다.");
-        }
-        window.location.reload();
-      }
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  
   const handleUpdate = (e: MouseEvent<HTMLButtonElement>) => {
     e.preventDefault()
     router.push(`/update/${id}`)
@@ -67,9 +48,6 @@ const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji, date }
         <div className='flex gap-1 whitespace-nowrap'>
           <button onClick={handleUpdate} className='block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
             <div>수정</div>
-          </button>
-          <button onClick={handleDeleteBtnClick} className='bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
-            <div>삭제</div>
           </button>
         </div>
       </Link>

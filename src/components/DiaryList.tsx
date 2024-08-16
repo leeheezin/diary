@@ -15,7 +15,7 @@ interface DiaryListProps {
 }
 
 const DiaryList: React.FC<DiaryListProps> = ({ data, loading }) => (
-  <div className="w-full max-w-2xl">
+  <div className="w-full max-w-2xl mt-3">
     {loading ? (
       <p className="text-gray-600">로딩 중...</p>
     ) : data.length > 0 ? (

@@ -6,8 +6,10 @@ import DiaryWriteButton from "@/src/components/Header";
 import SearchBar from "@/src/components/SearchBar";
 import DiaryList from "@/src/components/DiaryList";
 import Link from "next/link";
-import { FiCheckCircle } from "react-icons/fi";
 import Logout from "@/src/components/Logout";
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css'; 
+import '@/src/styles/Calendar.css'; 
 
 interface DiaryEntry {
   _id: string;
@@ -25,10 +27,13 @@ interface User {
 
 const Home: React.FC = () => {
   const [data, setData] = useState<DiaryEntry[]>([]);
+  const [filteredData, setFilteredData] = useState<DiaryEntry[]>([]); 
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [checkingLogin, setCheckingLogin] = useState(true);
   const [user, setUser] = useState<User | null>(null);
+  const [date, setDate] = useState<Date>(new Date());
+
   const router = useRouter();
 
   useEffect(() => {
@@ -40,6 +45,10 @@ const Home: React.FC = () => {
       fetchDiaryEntries();
     }
   }, [user]);
+
+  useEffect(() => {
+    filterDataByDate(date); 
+  }, [date, data]);
 
   const fetchDiaryEntries = async () => {
     try {
@@ -109,6 +118,39 @@ const Home: React.FC = () => {
       console.error("Error logging out:", error);
     }
   };
+  const tileContent = ({ date }: { date: Date }) => {
+    const formattedDate = formatDate(date);
+    const entriesForDate = data.filter(entry => {
+      return formatDate(new Date(entry.date)) === formattedDate;
+    });
+
+    return (
+      <div>
+        {entriesForDate.map(entry => (
+          <Link key={entry._id} href={`/view/${entry._id}`} className="block text-xs text-gray-500 hover:text-blue-600">
+            <span className="ellipsis">{entry.title}</span>
+          </Link>
+        ))}
+      </div>
+    );
+  };
+  
+  const formatDate = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+  
+  const filterDataByDate = (selectedDate: Date | Date[]) => {
+    const localDate = new Date(selectedDate as Date);
+    const offset = localDate.getTimezoneOffset() * 60000;
+    const correctedDate = new Date(localDate.getTime() - offset);
+    const formattedDate = correctedDate.toISOString().split("T")[0];
+
+    const filtered = data.filter((entry) => entry.date.startsWith(formattedDate));
+    setFilteredData(filtered);
+  };
 
   if (checkingLogin) {
     return (
@@ -140,7 +182,12 @@ const Home: React.FC = () => {
             setSearchTerm={setSearchTerm}
             handleSearch={handleSearch}
           />
-          <DiaryList data={data} loading={loading} />
+          <Calendar
+            onChange={(newDate) => setDate(newDate as Date)} 
+            value={date}
+            tileContent={tileContent}
+          />
+          <DiaryList data={filteredData} loading={loading} /> 
         </>
       ) : (
         <>
@@ -157,29 +204,8 @@ const Home: React.FC = () => {
               </Link>
             </div>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md">
-              <FiCheckCircle className="text-green-600 text-4xl mb-4" />
-              <h2 className="text-2xl font-bold mb-2">일상 기록</h2>
-              <p className="text-gray-600">
-                매일의 생각과 경험을 기록하고 저장하기
-              </p>
-            </div>
-            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md">
-              <FiCheckCircle className="text-green-600 text-4xl mb-4" />
-              <h2 className="text-2xl font-bold mb-2">생각 정리</h2>
-              <p className="text-gray-600">
-                과거의 일기를 쉽게 검색하고 추억 돌아보기
-              </p>
-            </div>
-            <div className="flex flex-col items-center bg-white p-6 rounded-lg shadow-md">
-              <FiCheckCircle className="text-green-600 text-4xl mb-4" />
-              <h2 className="text-2xl font-bold mb-2">꾸준한 습관</h2>
-              <p className="text-gray-600">
-                매일 일기를 작성하는 습관을 들이기
-              </p>
-            </div>
-          </div>
+          <Calendar
+          />
         </>
       )}
     </main>

@@ -12,6 +12,7 @@ interface EditData {
     content: string;
     emoji: string;
     date: string;
+    imageUrls: string[];
 }
 
 export default async function UpdatePage({ params }: { params: { id: string } }) {
@@ -28,6 +29,7 @@ export default async function UpdatePage({ params }: { params: { id: string } })
     const editData: EditData = { 
         _id: data._id.toString(),
         title: data.title,
+        imageUrls: data.imageUrls,
         content: data.content,
         emoji: data.emoji,
         date: data.date
