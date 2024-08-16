@@ -67,7 +67,7 @@ export async function POST(req: NextRequest) {
     
   } catch (error) {
     console.error('Error inserting data:', error);
-    return NextResponse.json({ message: 'Failed to insert data' }, { status: 500 });
+    return NextResponse.json({ message: '포스트 실패' }, { status: 500 });
   }
 }
 export const runtime = 'nodejs';

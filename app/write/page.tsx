@@ -48,7 +48,6 @@ const Write = () => {
                         <label htmlFor="image" className="sr-only">이미지</label>
                         <input
                             type="file"
-                            accept="image/*"
                             multiple
                             id="image"
                             name="image"
@@ -78,7 +77,8 @@ const Write = () => {
                                         src={url}
                                         alt={`Preview ${index + 1}`}
                                         layout="fill"
-                                        objectFit="cover"
+                                        objectFit="contain"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         className="rounded-md"
                                     />
                                     <button
@@ -86,7 +86,7 @@ const Write = () => {
                                         onClick={() => handleRemoveImage(index)}
                                         className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1"
                                     >
-                                        ✕
+                                        x
                                     </button>
                                 </div>
                             ))}
