@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import '@/src/styles/DiaryLayout.css';
+import { uploadImageToFirebase } from '@/imageUpload';
 
 interface UpdateProps {
     editData: {
@@ -71,9 +73,13 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
         formData.append('content', content);
         formData.append('emoji', emoji);
         formData.append('date', new Date().toISOString());
-    
+        const uploadedImageUrls: string[] = [];
+        for (const file of selectedFiles) {
+            const downloadURL = await uploadImageToFirebase(file);  // Firebase에 이미지 업로드
+            uploadedImageUrls.push(downloadURL);  // URL 배열에 추가
+        }
         selectedFiles.forEach(file => {
-            formData.append('images', file);
+            formData.append("imageUrls", JSON.stringify(uploadedImageUrls));
         });
     
         try {
@@ -98,7 +104,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
             <div className="w-full max-w-2xl">
                 <h4 className="sr-only">일기 수정</h4>
                 <form onSubmit={handleSubmit} className="bg-white rounded-md p-4 sm:p-6" encType="multipart/form-data">
-                    <div className="mb-4 flex items-end justify-between">
+                    <div className="mb-4 flex items-end justify-between gap-2">
                         <div>
                             <label htmlFor="emoji" className="block text-sm font-medium text-gray-700">오늘의 기분</label>
                             <select name="emoji" id="emoji" value={emoji} onChange={handleChange} className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
@@ -108,7 +114,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                                 <option value="🥳">🥳</option>
                             </select>
                         </div>
-                        <div>
+                        <div className='w-full'>
                             <label htmlFor="title" className="sr-only">제목</label>
                             <input type="text" id="title" name="title" value={title} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="제목" />
                         </div>
@@ -136,7 +142,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveImage(index)}
-                                        className="absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center"
+                                        className="close absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 w-6 h-6 flex items-center justify-center"
                                     >
                                         <span className="text-lg">×</span>
                                     </button>
