@@ -17,3 +17,4 @@ const app = initializeApp(firebaseConfig);
 const storage = getStorage(app);
 
 export { storage };
+console.log("Firebase Storage Bucket:", process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET);
