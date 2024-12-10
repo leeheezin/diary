@@ -1,14 +1,22 @@
-import React from 'react';
-import Link from 'next/link';
-import { FiEdit } from 'react-icons/fi';
+import React from "react";
+import Link from "next/link";
+import { FiEdit } from "react-icons/fi";
 
-const DiaryWriteButton: React.FC = () => (
-  <header className="flex items-center justify-between w-full max-w-2xl mb-4">
+interface User {
+  user: { userId: string; email: string; username: string };
+}
+
+const DiaryWriteButton: React.FC<User> = ({ user }) => (
+  <header className="flex items-center gap-2 w-full max-w-2xl mb-2">
     <h1 className="sr-only">일기장</h1>
-    <Link href="/write">
-      <div className="flex items-center mb-1 text-green-600 hover:underline">
-        오늘의 일기 <FiEdit className="mr-2" />
+    <p className="">
+      <strong className="text-purple-600">{user.username}</strong>님
+    </p>
+    <Link href="/write" className="flex gap-1 items-center text-purple-700 hover:underline">
+      <div className="">
+        오늘의 일기 
       </div>
+      <FiEdit/>
     </Link>
   </header>
 );

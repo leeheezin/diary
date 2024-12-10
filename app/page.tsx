@@ -7,9 +7,10 @@ import SearchBar from "@/src/components/SearchBar";
 import DiaryList from "@/src/components/DiaryList";
 import Link from "next/link";
 import Logout from "@/src/components/Logout";
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css'; 
-import '@/src/styles/Calendar.css'; 
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import "../src/styles/Home.css";
+import "@/src/styles/Calendar.css";
 
 interface DiaryEntry {
   _id: string;
@@ -27,7 +28,7 @@ interface User {
 
 const Home: React.FC = () => {
   const [data, setData] = useState<DiaryEntry[]>([]);
-  const [filteredData, setFilteredData] = useState<DiaryEntry[]>([]); 
+  const [filteredData, setFilteredData] = useState<DiaryEntry[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
   const [checkingLogin, setCheckingLogin] = useState(true);
@@ -47,7 +48,7 @@ const Home: React.FC = () => {
   }, [user]);
 
   useEffect(() => {
-    filterDataByDate(date); 
+    filterDataByDate(date);
   }, [date, data]);
 
   const fetchDiaryEntries = async () => {
@@ -59,6 +60,7 @@ const Home: React.FC = () => {
       }
       const data = await res.json();
       setData(data);
+      filterDataByDate(date); 
     } catch (error) {
       console.error("Error fetching diary entries:", error);
     } finally {
@@ -119,38 +121,42 @@ const Home: React.FC = () => {
     }
   };
   const tileContent = ({ date }: { date: Date }) => {
-    const formattedDate = formatDate(date);
-    const entriesForDate = data.filter(entry => {
-      return formatDate(new Date(entry.date)) === formattedDate;
-    });
+    const formattedDate = formatDate(date); // `formatDate` 함수로 날짜를 문자열로 변환
+    const entriesForDate = data.filter((entry) => formatDate(new Date(entry.date)) === formattedDate);
 
     return (
-      <div>
-        {entriesForDate.map(entry => (
-          <Link key={entry._id} href={`/view/${entry._id}`} className="block text-xs text-gray-500 hover:text-blue-600">
-            <span className="ellipsis">{entry.title}</span>
-          </Link>
-        ))}
-      </div>
+        <div>
+            {entriesForDate.map((entry) => (
+                <Link
+                    key={entry._id}
+                    href={`/view/${entry._id}`}
+                    className="block text-xs text-gray-500 hover:text-blue-600"
+                >
+                    <span className="ellipsis">{entry.title}</span>
+                </Link>
+            ))}
+        </div>
     );
-  };
-  
-  const formatDate = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-  };
-  
+};
+
+
+const formatDate = (date: Date): string => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`; // YYYY-MM-DD 형식으로 반환
+};
+
+
   const filterDataByDate = (selectedDate: Date | Date[]) => {
     const localDate = new Date(selectedDate as Date);
-    const offset = localDate.getTimezoneOffset() * 60000;
-    const correctedDate = new Date(localDate.getTime() - offset);
-    const formattedDate = correctedDate.toISOString().split("T")[0];
+    const formattedDate = localDate.toISOString().split("T")[0]; // UTC로 변환된 날짜
 
+    // 데이터를 필터링할 때, 서버에서 받은 데이터의 날짜와 비교
     const filtered = data.filter((entry) => entry.date.startsWith(formattedDate));
     setFilteredData(filtered);
-  };
+};
+
 
   if (checkingLogin) {
     return (
@@ -161,51 +167,59 @@ const Home: React.FC = () => {
   }
 
   return (
-    <main className="flex flex-col items-center p-6 bg-gray-100 min-h-screen">
+    <main className="flex flex-col items-center p-6 min-h-screen">
       {user ? (
         <>
-          <div className="flex items-center w-full p-2 mb-4 justify-between">
-            <p className="flex-grow-2 basis-2/3">
-              <strong className="text-green-600">{user.username}</strong>님
-            </p>
-            <div className="flex gap-2 whitespace-nowrap">
+          <div className="flex items-center w-full p-2 mb-1 justify-between">
+            <h1 className="text-4xl text-center font-bold text-purple-700 mb-4">
+              <Link href="/">Diary</Link>
+            </h1>
+            <div className="flex gap-3 whitespace-nowrap">
+            <SearchBar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              handleSearch={handleSearch}
+            />
               <Logout handleLogout={handleLogout} />
               <Cancel id={user.userId} />
             </div>
           </div>
-          <h1 className="text-4xl font-bold text-green-600 mb-4">
-            <Link href="/">Diary</Link>
-          </h1>
-          <DiaryWriteButton />
-          <SearchBar
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            handleSearch={handleSearch}
-          />
-          <Calendar
-            onChange={(newDate) => setDate(newDate as Date)} 
-            value={date}
-            tileContent={tileContent}
-          />
-          <DiaryList data={filteredData} loading={loading} /> 
+
+          <div className="content flex w-full gap-6">
+            {/* 캘린더 영역 */}
+            <div className="grow-[3] max-w-sm">
+              <Calendar
+                onChange={(newDate) => setDate(newDate as Date)}
+                value={date}
+                tileContent={tileContent}
+              />
+            </div>
+            {/* 글 목록 영역 */}
+            <div className="flex-1 overflow-y-auto max-h-screen">
+              <DiaryWriteButton user={user} />
+              <DiaryList data={filteredData} loading={loading} />
+            </div>
+          </div>
         </>
       ) : (
         <>
           <div className="flex items-center justify-between text-center mb-8 w-full">
-            <h1 className="text-4xl font-bold text-green-600 mb-4">
+            <h1 className="text-4xl font-bold text-purple-800 mb-4">
               <Link href="/">Diary</Link>
             </h1>
             <div className="flex gap-4 font-bold ml-auto">
-              <Link href="/login" className="hover:underline">
+              <Link href="/login" className="hover:underline text-purple-700">
                 로그인
               </Link>
-              <Link href="/signup" className="text-gray-400 hover:underline">
+              <Link
+                href="/signup"
+                className="text-gray-400 hover:text-purple-600"
+              >
                 회원가입
               </Link>
             </div>
           </div>
-          <Calendar
-          />
+          <Calendar />
         </>
       )}
     </main>

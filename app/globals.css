@@ -11,6 +11,8 @@
 }
 
 body {
+  max-width: 1280px;
+  margin: auto;
   color: rgb(var(--foreground-rgb));
   background: linear-gradient(
       to bottom,
@@ -26,3 +28,4 @@ body {
   }
 }
 .close {height: 20px;}
+#emoji {height: 42px;}

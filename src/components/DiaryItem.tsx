@@ -38,15 +38,15 @@ const DiaryItem: React.FC<DiaryItemProps> = ({ title, id, content, emoji, date }
     router.push(`/update/${id}`)
   }
   return (
-    <div className=" bg-white shadow-md rounded-md p-4 mb-4">
+    <div className="bg-white border shadow-md rounded-md p-4 mb-4 p-3">
       <Link href={`/view/${id}`} className='flex justify-between items-center'>
         <div className='flex flex-col'>
-          <h2 className="text-xl mt-2 text-green-700 font-bold">{title}</h2>
+          <h2 className="text-xl mt-2 text-purple-700 font-bold">{title}</h2>
           <span>{emoji}</span>
           <p className="text-gray-500">{formatDate(date)}</p>
         </div>
         <div className='flex gap-1 whitespace-nowrap'>
-          <button onClick={handleUpdate} className='block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
+          <button onClick={handleUpdate} className='block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md'>
             <div>수정</div>
           </button>
         </div>

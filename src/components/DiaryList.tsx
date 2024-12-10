@@ -15,9 +15,9 @@ interface DiaryListProps {
 }
 
 const DiaryList: React.FC<DiaryListProps> = ({ data, loading }) => (
-  <div className="w-full max-w-2xl mt-3">
+  <div className="w-full mt-3">
     {loading ? (
-      <p className="text-gray-600">로딩 중...</p>
+      <p className="text-purple-600">로딩 중...</p>
     ) : data.length > 0 ? (
       data.map((item) => (
         <DiaryItem
@@ -30,7 +30,7 @@ const DiaryList: React.FC<DiaryListProps> = ({ data, loading }) => (
         />
       ))
     ) : (
-      <p className="text-gray-600">등록된 글이 없습니다.</p>
+      <p className="text-gray-400">등록된 글이 없습니다.</p>
     )}
   </div>
 );

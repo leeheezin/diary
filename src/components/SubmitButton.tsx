@@ -7,7 +7,7 @@ export default function SubmitButton({ name }: { name: string }) {
     <button
       type="submit"
       disabled={pending}>
-      {pending ? '로딩...' : name}
+      {pending ? 'loading...' : name}
     </button>
   )
 }

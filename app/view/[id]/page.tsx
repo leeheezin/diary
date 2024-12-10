@@ -69,30 +69,28 @@ const View = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  if (loading) return <div className='mt-4 ml-4 text-green-700 text-xl'>Loading...</div>;
+  if (loading) return <div className='flex flex-col items-center justify-center p-6 bg-gray-100 min-h-screen'>Loading...</div>;
 
   return (
-    <div className="flex flex-col min-h-screen items-center justify-center p-3 sm:p-6">
-      <div className="w-full max-w-2xl flex-grow flex flex-col justify-center">
+    <div className="flex flex-col min-h-screen items-center justify-center p-3 sm:p-6 bg-purple-50">
+      <div className="w-full max-w-2xl flex-grow flex flex-col bg-white rounded-md shadow-md p-6">
         <h4 className="sr-only">일기 보기</h4>
-
-        <div className="bg-white rounded-md p-2 mb-4 flex-grow">
-          <div className="mb-2">
-            <div className='flex gap-1 items-center'>
-              <span className="text-2xl">{diaryItem?.emoji}</span>
-              <span className="">{diaryItem ? formatDate(diaryItem.date) : ''}</span>
-              <Link href="/" className='flex-1'>
-                <HiMiniListBullet className="ml-auto text-2xl text-green-700" />
-              </Link>
-            </div>
-            <h2 className="text-xl text-green-700 font-bold mt-3">{diaryItem?.title}</h2>
+        <div className="mb-4">
+          <div className='flex gap-1 items-center'>
+            <span className="text-2xl">{diaryItem?.emoji}</span>
+            <span>{diaryItem ? formatDate(diaryItem.date) : ''}</span>
+            <Link href="/" className='flex-1'>
+              <HiMiniListBullet className="ml-auto text-2xl text-purple-700" />
+            </Link>
           </div>
-          {diaryItem?.imageUrls && (
-            <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
+          <h2 className="text-xl text-purple-700 font-bold mt-3">{diaryItem?.title}</h2>
+        </div>
+        {diaryItem?.imageUrls && (
+          <div className="grid grid-cols-2 sm:grid-cols-2 gap-4">
             {diaryItem.imageUrls.map((imageUrl: string, index: number) => {
-              const isWide = index % 3 === 0; 
+              const isWide = index % 3 === 0;
               const isTall = index % 3 === 3; 
-          
+
               return (
                 <div 
                   key={index} 
@@ -111,24 +109,23 @@ const View = ({ params }: { params: { id: string } }) => {
               );
             })}
           </div>
-          
-          )}
-          <p className="text-gray-700">{diaryItem?.content}</p>
-          <div className="flex gap-2 mt-10">
-            <Link href={`/update/${id}`} className='inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md'>
-              수정
-            </Link>
-            <button 
-              onClick={handleDelete} 
-              className={`inline-block bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-md`}
-            >
-              삭제
-            </button>
-          </div>
+        )}
+        <p className="text-gray-700">{diaryItem?.content}</p>
+        <div className="flex gap-2 mt-10">
+          <Link href={`/update/${id}`} className='inline-block bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md'>
+            수정
+          </Link>
+          <button 
+            onClick={handleDelete} 
+            className={`inline-block bg-gray-400 hover:bg-gray-500 text-white px-4 py-2 rounded-md`}
+          >
+            삭제
+          </button>
         </div>
       </div>
     </div>
   );
+
 };
 
 export default View;

@@ -7,7 +7,7 @@ import { promises as fs, constants } from 'fs';
 import path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
-const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key-here';
+const JWT_SECRET = process.env.JWT_SECRET || 's0f9s0f232lnlwfwl';
 
 export async function POST(req: NextRequest) {
   try {
@@ -46,7 +46,7 @@ export async function POST(req: NextRequest) {
         }
     
         const imagePath = path.join(uploadDir, imageName);
-        await fs.writeFile(imagePath, Buffer.from(await image.arrayBuffer()));
+        await fs.writeFile(imagePath, new Uint8Array(Buffer.from(await image.arrayBuffer())));
         imageUrls.push(`/uploads/${imageName}`); // 각 이미지 URL을 배열에 추가합니다.
       }
     }

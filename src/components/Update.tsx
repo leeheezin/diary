@@ -22,6 +22,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
     const [emoji, setEmoji] = useState(editData.emoji);
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>(editData.imageUrls || []);
+    const [deletedImages, setDeletedImages] = useState<string[]>([]);
     const [message, setMessage] = useState('');
     const router = useRouter();
 
@@ -29,6 +30,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
         setTitle(editData.title);
         setContent(editData.content);
         setEmoji(editData.emoji);
+        setPreviewUrls(editData.imageUrls || []);
     }, [editData]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -58,65 +60,83 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
     };
 
     const handleRemoveImage = (index: number) => {
+        const removedImageUrl = previewUrls[index];
         setPreviewUrls(prevUrls => prevUrls.filter((_, i) => i !== index));
         setSelectedFiles(prevFiles => prevFiles.filter((_, i) => i !== index));
+        setDeletedImages(prevImages => [...prevImages, removedImageUrl]);  // 삭제된 이미지 URL 상태에 저장
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-    
+
         const formData = new FormData();
         formData.append('_id', editData._id);
         formData.append('title', title);
         formData.append('content', content);
         formData.append('emoji', emoji);
         formData.append('date', new Date().toISOString());
-    
+
         selectedFiles.forEach(file => {
             formData.append('images', file);
         });
-    
+        // 삭제된 이미지 URL도 함께 전송
+        deletedImages.forEach(imageUrl => {
+            formData.append('deletedImages', imageUrl);
+        });
         try {
             const response = await fetch('/api/post/update', {
-                method: 'PATCH',
+                method: 'POST',
                 body: formData,
             });
-    
+
             if (!response.ok) {
                 throw new Error('네트워크 응답이 올바르지 않습니다.');
             }
-    
-            setMessage('글이 수정되었습니다😊');
+
+            const result = await response.json();
+            if (result.data) {
+                setTitle(result.data.title);
+                setContent(result.data.content);
+                setEmoji(result.data.emoji);
+                setPreviewUrls(result.data.imageUrls || []);
+            }
+
+            // 서버에서 반환된 수정된 데이터로 업데이트
+            if (result.imageUrls) {
+                setPreviewUrls(result.imageUrls);
+            }
             router.push(`/view/${editData._id}`);
         } catch (error) {
             console.error('Error:', error);
+            setMessage('수정 중 오류가 발생했습니다.');
         }
     };
+
     
     return (
-        <div className="flex min-h-screen justify-center p-3 sm:p-6">
-            <div className="w-full max-w-2xl">
+        <div className="flex min-h-screen justify-center p-6">
+            <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-3">
                 <h4 className="sr-only">일기 수정</h4>
-                <form onSubmit={handleSubmit} className="bg-white rounded-md p-4 sm:p-6" encType="multipart/form-data">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div className="gap-2 mb-4 flex items-end justify-between">
-                        <div>
-                            <label htmlFor="emoji" className="block text-sm font-medium text-gray-700 sr-only">오늘의 기분</label>
-                            <select name="emoji" id="emoji" value={emoji} onChange={handleChange} className="w-20 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500">
+                        <div className='grow-[2]'>
+                            <label htmlFor="emoji" className="sr-only">오늘의 기분</label>
+                            <select name="emoji" id="emoji" value={emoji} onChange={handleChange} className="w-full h-full px-3 py-2 bg-purple-100 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400">
                                 <option value="😄">😄</option>
                                 <option value="🥲">🥲</option>
                                 <option value="😡">😡</option>
                                 <option value="🥳">🥳</option>
                             </select>
                         </div>
-                        <div className='flex-auto'>
+                        <div className='grow-[5]'>
                             <label htmlFor="title" className="sr-only">제목</label>
-                            <input type="text" id="title" name="title" value={title} onChange={handleChange} className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500" placeholder="제목" />
+                            <input type="text" id="title" name="title" value={title} onChange={handleChange} className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:border-purple-500" placeholder="제목" />
                         </div>
                     </div>
                     <div className="mb-4 flex gap-4 items-center">
                         <label htmlFor="image" className="sr-only">이미지</label>
                         <input type="file" id="image" name="image" multiple onChange={handleFileChange} className="hidden" />
-                        <label htmlFor="image" className="whitespace-nowrap cursor-pointer inline-block bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">사진 첨부</label>
+                        <label htmlFor="image" className="whitespace-nowrap cursor-pointer inline-block bg-purple-500 hover:bg-purple-700 text-white px-4 py-2 rounded-md">사진 첨부</label>
                         {selectedFiles.length > 0 && (
                             <div className="mt-2">
                                 <ul className="list-disc list-inside">
@@ -127,7 +147,7 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                             </div>
                         )}
                     </div>
-                    <div className="mb-4">
+                    { previewUrls ?<div className="mb-4">
                         <label className="sr-only">미리보기</label>
                         <div className="grid grid-cols-3 gap-2 mt-2">
                             {previewUrls.map((url, index) => (
@@ -141,27 +161,28 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
                                     <button
                                         type="button"
                                         onClick={() => handleRemoveImage(index)}
-                                        className="close absolute top-1 right-1 bg-red-600 text-white rounded-full p-1 w-5 flex items-center justify-center"
+                                        className="close absolute top-1 right-1 bg-red-400 text-white rounded-full p-1 w-5 flex items-center justify-center"
                                     >
                                         <span className="text-lg">×</span>
                                     </button>
                                 </div>
                             ))}
                         </div>
-                    </div>
+                    </div> : ''}
                     <div className="mb-4">
                         <label htmlFor="content" className="sr-only">내용</label>
-                        <textarea id="content" name="content" value={content} onChange={handleChange} rows={4} className="w-full px-3 py-2 border border-gray-300 rounded-md resize-none focus:outline-none focus:border-blue-500 h-96" placeholder="내용"></textarea>
+                        <textarea id="content" name="content" value={content} onChange={handleChange} rows={4} className="w-full px-3 py-2 border border-purple-300 rounded-md resize-none focus:outline-none focus:border-purple-500 h-96" placeholder="내용"></textarea>
                     </div>
                     <div className="flex gap-2">
-                        <button type="submit" className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">저장</button>
-                        <Link href={`/view/${editData._id}`} className="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-md">취소</Link>
+                        <button type="submit" className="bg-purple-700 hover:bg-purple-800 text-white px-4 py-2 rounded-md">수정</button>
+                        <Link href={`/view/${editData._id}`} className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-md">취소</Link>
                     </div>
                 </form>
-                {message && <p className="mt-4 text-green-600">{message}</p>}
+                {message && <p className="mt-4 text-purple-600">{message}</p>}
             </div>
         </div>
     );
+    
 };
 
 export default Update;
