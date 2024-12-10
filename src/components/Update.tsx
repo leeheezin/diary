@@ -4,6 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import '@/src/styles/DiaryLayout.css';
+import { uploadImageToFirebase } from '@/imageUpload';
 
 interface UpdateProps {
     editData: {
@@ -75,9 +77,13 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
         formData.append('content', content);
         formData.append('emoji', emoji);
         formData.append('date', new Date().toISOString());
-
+        const uploadedImageUrls: string[] = [];
+        for (const file of selectedFiles) {
+            const downloadURL = await uploadImageToFirebase(file);  // Firebase에 이미지 업로드
+            uploadedImageUrls.push(downloadURL);  // URL 배열에 추가
+        }
         selectedFiles.forEach(file => {
-            formData.append('images', file);
+            formData.append("imageUrls", JSON.stringify(uploadedImageUrls));
         });
         // 삭제된 이미지 URL도 함께 전송
         deletedImages.forEach(imageUrl => {
@@ -117,20 +123,20 @@ const Update: React.FC<UpdateProps> = ({ editData }) => {
         <div className="flex min-h-screen justify-center p-6">
             <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-3">
                 <h4 className="sr-only">일기 수정</h4>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                    <div className="gap-2 mb-4 flex items-end justify-between">
-                        <div className='grow-[2]'>
+                <form onSubmit={handleSubmit} className="bg-white rounded-md p-4 sm:p-6" encType="multipart/form-data">
+                    <div className='flex items-end justify-between gap-2'>
+                        <div className="mb-4 grow-[1]">
                             <label htmlFor="emoji" className="sr-only">오늘의 기분</label>
-                            <select name="emoji" id="emoji" value={emoji} onChange={handleChange} className="w-full h-full px-3 py-2 bg-purple-100 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400">
+                            <select name="emoji" id="emoji" className="w-full px-3 py-2 bg-purple-100 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400">
                                 <option value="😄">😄</option>
                                 <option value="🥲">🥲</option>
                                 <option value="😡">😡</option>
                                 <option value="🥳">🥳</option>
                             </select>
                         </div>
-                        <div className='grow-[5]'>
+                        <div className="mb-4 grow-[5]">
                             <label htmlFor="title" className="sr-only">제목</label>
-                            <input type="text" id="title" name="title" value={title} onChange={handleChange} className="w-full px-3 py-2 border border-purple-300 rounded-md focus:outline-none focus:border-purple-500" placeholder="제목" />
+                            <input type="text" id="title" name="title" placeholder="제목" className="w-full h-full px-4 py-3 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400" />
                         </div>
                     </div>
                     <div className="mb-4 flex gap-4 items-center">

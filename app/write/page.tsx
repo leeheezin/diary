@@ -3,10 +3,14 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { uploadImageToFirebase } from '@/imageUpload';
+import { useRouter } from 'next/navigation';
 
 const Write = () => {
+    const router = useRouter()
     const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
     const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+    const [uploading, setUploading] = useState(false);  // 업로드 상태 추가
 
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -24,22 +28,50 @@ const Write = () => {
         setPreviewUrls((prevUrls) => prevUrls.filter((_, i) => i !== index));
     };
 
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setUploading(true);  // 업로드 중으로 상태 설정
+
+        const uploadedImageUrls: string[] = [];
+        for (const file of selectedFiles) {
+            const downloadURL = await uploadImageToFirebase(file);  // Firebase에 이미지 업로드
+            uploadedImageUrls.push(downloadURL);  // URL 배열에 추가
+        }
+
+        // 서버로 데이터를 전송합니다.
+        const formData = new FormData(e.target as HTMLFormElement);
+        formData.append("imageUrls", JSON.stringify(uploadedImageUrls));  // 이미지 URL 추가
+
+        const response = await fetch('/api/post/write', {
+            method: 'POST',
+            body: formData,
+        });
+
+        if (response.ok) {
+            setUploading(false);
+            const data = await response.json();  
+            const postId = data.insertedId;  
+            router.push(`/view/${postId}`);  
+        }
+    };
+
+
     return (
         <div className="flex min-h-screen justify-center p-6">
             <div className="w-full max-w-2xl bg-white shadow-lg rounded-xl p-3">
                 <h4 className="sr-only">오늘의 일기</h4>
-                <form action="/api/post/write" method="POST" className="space-y-6" encType="multipart/form-data">
-                    <div className="flex gap-2 justify-between items-center">
-                        <div className="grow-[2]">
+                <form onSubmit={handleSubmit} className="bg-white rounded-md p-4 sm:p-6" encType="multipart/form-data">
+                    <div className='flex items-end justify-between gap-2'>
+                        <div className="mb-4 grow-[1]">
                             <label htmlFor="emoji" className="sr-only">오늘의 기분</label>
-                            <select name="emoji" id="emoji" className="w-full h-full px-3 py-2 bg-purple-100 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400">
+                            <select name="emoji" id="emoji" className="w-full px-3 py-2 bg-purple-100 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400">
                                 <option value="😄">😄</option>
                                 <option value="🥲">🥲</option>
                                 <option value="😡">😡</option>
                                 <option value="🥳">🥳</option>
                             </select>
                         </div>
-                        <div className="grow-[5]">
+                        <div className="mb-4 grow-[5]">
                             <label htmlFor="title" className="sr-only">제목</label>
                             <input type="text" id="title" name="title" placeholder="제목" className="w-full h-full px-4 py-3 border border-purple-300 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-400" />
                         </div>

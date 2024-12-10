@@ -1,0 +1,9 @@
+[
+    {
+      "origin": ["http://localhost:3000", "https://diary-blond-nine.vercel.app/"],
+      "method": ["GET", "POST", "PUT", "PATCH", "DELETE"],
+      "responseHeader": ["Content-Type"],
+      "maxAgeSeconds": 3600
+    }
+  ]
+  
